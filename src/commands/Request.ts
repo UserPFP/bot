@@ -30,7 +30,7 @@ export default class Request extends SlashCommand {
       const approvalMessage = await client.rest.channels.createMessage(env.approvals.channel, {
         embeds: [{
           title: "Pending",
-          description: `Request from ${ctx.user.mention}`,
+          description: `Request from ${ctx.user.mention}. [[Image Link]](${image.url})`,
           thumbnail: {
             url: image.url
           }

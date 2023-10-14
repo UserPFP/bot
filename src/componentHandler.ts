@@ -19,9 +19,9 @@ async function handleApproval (ctx: ComponentContext) {
   await updateUserAvatar(userId, image)
   await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
     embeds: [{
-      color: 0x00FF22,
+      color: 0x70C1B3,
       title: "Approved!",
-      description: `Request from ${ctx.user.mention}`,
+      description: `Request from ${ctx.user.mention}. [[Image Link]](${image.url})`,
       thumbnail: {
         url: image.url
       },
@@ -43,7 +43,7 @@ async function handleUrlApproval (ctx: ComponentContext) {
   await updateUserAvatarUrl(userId, url)
   await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
     embeds: [{
-      color: 0x00FF22,
+      color: 0x70C1B3,
       title: "Approved!",
       description: `Request from ${ctx.user.mention}`,
       thumbnail: {
@@ -84,7 +84,7 @@ async function handleDenial (ctx: ComponentContext) {
     const { reason } = modalCtx.values
     await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
       embeds: [{
-        color: 0xFF0022,
+        color: 0xFF1654,
         title: "Denied",
         description: `Request from ${ctx.user.mention}`,
         thumbnail: {
