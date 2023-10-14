@@ -8,9 +8,9 @@ dependencies:
   '@octokit/rest':
     specifier: ^20.0.2
     version: 20.0.2
-  base256-encoding:
-    specifier: ^2.0.2
-    version: 2.0.2
+  '@uwu-codes/status-server':
+    specifier: ^1.0.1
+    version: 1.0.1
   env-verifier:
     specifier: ^1.5.0
     version: 1.5.0
@@ -466,6 +466,13 @@ packages:
       eslint-visitor-keys: 3.4.3
     dev: true
 
+  /@uwu-codes/status-server@1.0.1:
+    resolution: {integrity: sha512-+BFrAHz8D+ysNHJbcTTScNz9Hi/yPEe8skoa0dh1FNNk0X7GaBecnlo/jbWGSBfBxAaSO7ADg9i1mbtjJNVV7g==}
+    hasBin: true
+    dependencies:
+      commander: 10.0.1
+    dev: false
+
   /abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
     dev: true
@@ -535,14 +542,6 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
-  /base256-encoding@2.0.2:
-    resolution: {integrity: sha512-t5u4c10xZIcghfxUswt/W4goi+XvjPxb6nZJEB46cxilKqkExYRtXRDFVF4zTaxBDkTB5NJBOexpBmDrHXaaNQ==}
-    dependencies:
-      node-buffer-encoding: 1.0.1
-      string-from-charcodes: 2.0.0
-      uint8-encoding: 2.0.0
-    dev: false
-
   /before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
     dev: false
@@ -604,6 +603,11 @@ packages:
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: true
+
+  /commander@10.0.1:
+    resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
+    engines: {node: '>=14'}
+    dev: false
 
   /concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -1108,10 +1112,6 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /node-buffer-encoding@1.0.1:
-    resolution: {integrity: sha512-eklg9A4yXOlIZOIeV8D33gHZjw2g61TREuhucTM+/OR/xn4MXTZaV60fEYP+Lsa7C9bliJvvNrgkC6igafgKrw==}
-    dev: false
-
   /nodemon@3.0.1:
     resolution: {integrity: sha512-g9AZ7HmkhQkqXkRc20w+ZfQ73cHLbE8hnPbtaFbFtCumZsjyMhKk9LajQ07U5Ux28lvFjZ5X7HvWR1xzU8jHVw==}
     engines: {node: '>=10'}
@@ -1339,10 +1339,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /string-from-charcodes@2.0.0:
-    resolution: {integrity: sha512-6LxlH3j5yMEOuyfoaC7oakAHKn5f8IZurTDIBq2jgKeuzwJdbKnBXQpzEr2nQnut/9cRLwFUHyKZGZLihZow6A==}
-    dev: false
-
   /strip-ansi@6.0.1:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
@@ -1452,10 +1448,6 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
-
-  /uint8-encoding@2.0.0:
-    resolution: {integrity: sha512-MQcY+mEuLoHBqAawasWrFbZx1SqUoFU/wVYNGO6lsIxczeO+cNjA1djYHQM3GWU3SaEhKTfG3Z5cE2r+zR6tNw==}
-    dev: false
 
   /undefsafe@2.0.5:
     resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}

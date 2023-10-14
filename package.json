@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --ext .ts src",
     "build": "rm -rf dist && tsc",
-    "dev": "nodemon --exec node -r dotenv/config --loader ts-node/esm src/index.ts"
+    "dev": "nodemon --exec node -r dotenv/config --loader ts-node/esm src/index.ts",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
-    "base256-encoding": "^2.0.2",
+    "@uwu-codes/status-server": "^1.0.1",
     "env-verifier": "^1.5.0",
     "oceanic.js": "^1.8.1",
     "slash-create": "^5.14.0"
