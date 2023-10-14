@@ -5,6 +5,10 @@ on:
     branches:
       - owo
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     name: Build container
