@@ -8,7 +8,6 @@ import { ImageError, validateImage } from "../utils/images.js"
 export default class Request extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      guildIDs: ["356272183166763008"],
       name: "request",
       description: "Request an avatar",
       options: [{

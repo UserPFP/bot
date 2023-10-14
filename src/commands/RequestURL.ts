@@ -8,7 +8,6 @@ import { ImageError } from "../utils/images.js"
 export default class RequestURL extends SlashCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
-      guildIDs: ["356272183166763008"],
       name: "request-url",
       description: "Request an URL as an avatar. This should only be used for dynamic/random image APIs.",
       options: [{
