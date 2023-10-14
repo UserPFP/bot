@@ -51,7 +51,7 @@ export function validateImage (attachment: AttachmentData): ValidatedImage {
 export async function validateAndDownloadImage (image: ValidatedImage): Promise<ImageData> {
   const imageRequest = await fetch(image.url, {
     headers: {
-      "user-agent": env.useragent
+      "User-Agent": env.useragent
     }
   })
 

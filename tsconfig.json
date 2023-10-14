@@ -3,7 +3,8 @@
   "include": ["src/**/*", "scripts/**/*"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "sourceMap": true
   },
   "ts-node": {
     "esm": true,
