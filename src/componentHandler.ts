@@ -21,7 +21,7 @@ async function handleApproval (ctx: ComponentContext) {
     embeds: [{
       color: 0x70C1B3,
       title: "Approved!",
-      description: `Request from ${ctx.user.mention}. [[Image Link]](${image.url})`,
+      description: `Request from <@${userId}>. [[Image Link]](${image.url})`,
       thumbnail: {
         url: image.url
       },
@@ -45,7 +45,7 @@ async function handleUrlApproval (ctx: ComponentContext) {
     embeds: [{
       color: 0x70C1B3,
       title: "Approved!",
-      description: `Request from ${ctx.user.mention}`,
+      description: `Request from <@${userId}>.`,
       thumbnail: {
         url: url
       },
