@@ -58,7 +58,10 @@ export default class RequestURL extends SlashCommand {
           ]
         }]
       })
-      return ctx.send(`Image request submitted, track approval state here: ${approvalMessage.jumpLink}`)
+      return ctx.send(
+        `Image request submitted, track approval state here: ${approvalMessage.jumpLink}`,
+        { ephemeral: true }
+      )
     } catch (error) {
       if (error instanceof ImageError) {
         return ctx.send(error.message, { ephemeral: true })
