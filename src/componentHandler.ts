@@ -81,12 +81,13 @@ async function handleDenial (ctx: ComponentContext) {
       }]
     }]
   }, async modalCtx => {
+
     const { reason } = modalCtx.values
     await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
       embeds: [{
         color: 0xFF1654,
         title: "Denied",
-        description: `Request from ${ctx.user.mention}`,
+        description: `Request from <@${userId}>`,
         thumbnail: {
           url: image.url
         },
