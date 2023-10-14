@@ -27,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ghcr.io/UserPFP/userpfp-bot:latest
+          tags: ghcr.io/userpfp/userpfp-bot:latest
