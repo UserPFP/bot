@@ -1,6 +1,7 @@
 import { ComponentContext, ComponentType, TextInputStyle } from "slash-create"
 
 import client from "./config/client.js"
+import env from "./config/env.js"
 import { updateUserAvatarUrl } from "./utils/database.js"
 import { ValidatedImage } from "./utils/images.js"
 import { updateUserAvatar } from "./utils/index.js"
@@ -107,6 +108,11 @@ async function handleDenial (ctx: ComponentContext) {
 }
 
 export default async function componentHandler (ctx: ComponentContext) {
+  // All components are mod-only, so we can check for the role here to prevent duplication of logic
+  if (!ctx.member?.roles.includes(env.approvals.role)) {
+    return
+  }
+
   const handlers: { [key: string]: (ctx: ComponentContext) => any } = {
     approve: handleApproval,
     approve_url: handleUrlApproval,

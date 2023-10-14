@@ -5,5 +5,4 @@ export async function updateUserAvatar (userId: string, validatedImage: Validate
   const image = await validateAndDownloadImage(validatedImage)
   const imageUrl = await updateUserAvatarImage(userId, image)
   await updateUserAvatarUrl(userId, imageUrl)
-  console.log(imageUrl)
 }

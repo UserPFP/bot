@@ -19,6 +19,10 @@ const config = {
     applicationID: "DISCORD_ID",
     publicKey: "DISCORD_KEY",
     token: "DISCORD_TOKEN"
+  },
+  approvals: {
+    channel: "APPROVAL_CHANNEL",
+    role: "APPROVAL_ROLE"
   }
 }
 

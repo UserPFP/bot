@@ -2,6 +2,7 @@ import { ButtonStyles, ComponentTypes } from "oceanic.js"
 import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from "slash-create"
 
 import client from "../config/client.js"
+import env from "../config/env.js"
 import { ImageError, validateImage } from "../utils/images.js"
 
 export default class Request extends SlashCommand {
@@ -26,7 +27,7 @@ export default class Request extends SlashCommand {
     }
     try {
       const image = validateImage(attachment)
-      const approvalMessage = await client.rest.channels.createMessage(ctx.channelID, {
+      const approvalMessage = await client.rest.channels.createMessage(env.approvals.channel, {
         embeds: [{
           title: "Pending",
           description: `Request from ${ctx.user.mention}`,
