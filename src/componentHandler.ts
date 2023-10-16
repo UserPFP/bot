@@ -6,16 +6,34 @@ import { updateUserAvatarUrl } from "./utils/database.js"
 import { ValidatedImage } from "./utils/images.js"
 import { updateUserAvatar } from "./utils/index.js"
 
-async function handleApproval (ctx: ComponentContext) {
+// Track which messages are currently being handled to prevent status collisions
+const approvalLock = new Set<string>
+
+function extractImageData (ctx: ComponentContext): { userId: string, image: ValidatedImage }|null {
   if (!ctx.message.embeds[0].thumbnail?.url) {
+    return null
+  }
+  if (approvalLock.has(ctx.message.id)) {
+    return null
+  }
+  approvalLock.add(ctx.message.id)
+  const [,userId, type, ext] = ctx.customID.split("-")
+  return {
+    userId,
+    image:{
+      type,
+      ext,
+      url: ctx.message.embeds[0].thumbnail.url
+    }
+  }
+}
+
+async function handleApproval (ctx: ComponentContext) {
+  const validatedData = extractImageData(ctx)
+  if (validatedData === null) {
     return
   }
-  const [,userId, type, ext] = ctx.customID.split("-")
-  const image: ValidatedImage = {
-    type,
-    ext,
-    url: ctx.message.embeds[0].thumbnail.url
-  }
+  const { userId, image } = validatedData
   await updateUserAvatar(userId, image)
   await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
     embeds: [{
@@ -31,14 +49,15 @@ async function handleApproval (ctx: ComponentContext) {
     }],
     components: []
   })
+  approvalLock.delete(ctx.message.id)
 }
 
 async function handleUrlApproval (ctx: ComponentContext) {
-  if (!ctx.message.embeds[0].thumbnail?.url) {
+  const validatedData = extractImageData(ctx)
+  if (validatedData === null) {
     return
   }
-  const url = ctx.message.embeds[0].thumbnail?.url
-  const [,userId] = ctx.customID.split("-")
+  const { userId, image: { url } } = validatedData
 
   await updateUserAvatarUrl(userId, url)
   await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
@@ -55,18 +74,16 @@ async function handleUrlApproval (ctx: ComponentContext) {
       }
     }],
     components: []
-  }) }
+  })
+  approvalLock.delete(ctx.message.id)
+}
 
 async function handleDenial (ctx: ComponentContext) {
-  if (!ctx.message.embeds[0].thumbnail?.url) {
+  const validatedData = extractImageData(ctx)
+  if (validatedData === null) {
     return
   }
-  const [,userId, type, ext] = ctx.customID.split("-")
-  const image: ValidatedImage = {
-    type,
-    ext,
-    url: ctx.message.embeds[0].thumbnail.url
-  }
+  const { userId, image } = validatedData
   await ctx.sendModal({
     title: "Deny PFP Request",
     components: [{
@@ -81,7 +98,18 @@ async function handleDenial (ctx: ComponentContext) {
       }]
     }]
   }, async modalCtx => {
-
+    // Check if the message is locked (signifies an upload in progress)
+    if (approvalLock.has(ctx.message.id)) {
+      await modalCtx.send("Approval already pending!", { ephemeral: true })
+      return
+    }
+    // Fetch the original message to see if it has been approved in the meantime
+    const updatedMessage = await client.rest.channels.getMessage(ctx.message.channelID, ctx.message.id)
+    // If the components are gone then the request has already been approved or denied
+    if (updatedMessage.components.length === 0) {
+      await modalCtx.send("Unable to deny request.", { ephemeral: true })
+      return
+    }
     const { reason } = modalCtx.values
     await client.rest.channels.editMessage(ctx.channelID, ctx.message.id, {
       embeds: [{
@@ -106,6 +134,7 @@ async function handleDenial (ctx: ComponentContext) {
     })
     await modalCtx.acknowledge()
   })
+  approvalLock.delete(ctx.message.id)
 }
 
 export default async function componentHandler (ctx: ComponentContext) {
