@@ -22,7 +22,8 @@ const config = {
   },
   approvals: {
     channel: "APPROVAL_CHANNEL",
-    role: "APPROVAL_ROLE"
+    role: "APPROVAL_ROLE",
+    guild: "APPROVAL_GUILD"
   }
 }
 
