@@ -100,3 +100,32 @@ export async function updateUserAvatarImage (userId: string, image: ImageData) {
 
   return `https://raw.githubusercontent.com/${env.repos.image.owner}/${env.repos.image.name}/main/${imagePath}`
 }
+
+
+export async function deleteUserAvatarImage (userId: string) {
+  // Get a list of all avatar files in the directory
+  const directoryListing = await octokit.repos.getContent({
+    owner: env.repos.image.owner,
+    repo: env.repos.image.name,
+    path: `/Avatars/${userId[0]}`
+  })
+
+  if (!Array.isArray(directoryListing.data)) {
+    throw new Error("User directory not correct type")
+  }
+
+  const matchedAvatars = directoryListing.data.filter(v => v.name.startsWith(`${userId}.`))
+
+  for (const avatar of matchedAvatars) {
+    const response = await octokit.repos.deleteFile({
+      owner: env.repos.image.owner,
+      repo: env.repos.image.name,
+      message: `Deleting avatar for ${userId}`,
+      path: avatar.path,
+      sha: avatar.sha
+    })
+    if (response.data.commit.sha === undefined) {
+      throw new Error("Unexpected response from Github when deleting user images")
+    }
+  }
+}

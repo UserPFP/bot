@@ -48,3 +48,25 @@ export async function updateUserAvatarUrl (userId: string, imageUrl: string) {
     sha
   })
 }
+
+
+export async function deleteUserAvatarUrl (userId: string) {
+  const { sha, db: database } = await fetchCurrentDatabase()
+  if (database.avatars[userId] === undefined) {
+    return
+  }
+
+  delete database.avatars[userId]
+
+  const stringified = JSON.stringify(database, null, 2)
+  const encoded = Buffer.from(stringified).toString("base64")
+
+  await octokit.repos.createOrUpdateFileContents({
+    owner: env.repos.db.owner,
+    repo: env.repos.db.name,
+    path: "source/data.json",
+    message: `Deleting avatar for ${userId}`,
+    content: encoded,
+    sha
+  })
+}

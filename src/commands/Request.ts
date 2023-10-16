@@ -1,11 +1,12 @@
 import { ButtonStyles, ComponentTypes } from "oceanic.js"
-import { CommandContext, CommandOptionType, SlashCommand, SlashCreator } from "slash-create"
+import { CommandContext, CommandOptionType, SlashCreator } from "slash-create"
 
+import BaseCommand from "../BaseCommand.js"
 import client from "../config/client.js"
 import env from "../config/env.js"
 import { ImageError, validateImage } from "../utils/images.js"
 
-export default class Request extends SlashCommand {
+export default class Request extends BaseCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
       name: "request",
