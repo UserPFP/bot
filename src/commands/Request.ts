@@ -15,7 +15,8 @@ export default class Request extends SlashCommand {
         name: "image",
         description: "The avatar that you would like to request",
         required: true
-      }]
+      }],
+      deferEphemeral: true
     })
   }
 

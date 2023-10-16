@@ -15,7 +15,8 @@ export default class RequestURL extends SlashCommand {
         name: "url",
         description: "The URL to request as your avatar",
         required: true
-      }]
+      }],
+      deferEphemeral: true
     })
   }
 
