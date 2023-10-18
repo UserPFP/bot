@@ -9,7 +9,6 @@ export default class Delete extends BaseCommand {
     super(creator, {
       name: "delete",
       description: "Delete the UserPFP for a user.",
-      guildIDs: ["356272183166763008"],
       options: [{
         type: CommandOptionType.USER,
         name: "user",
