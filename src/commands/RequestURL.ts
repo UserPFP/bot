@@ -6,6 +6,28 @@ import client from "../config/client.js"
 import env from "../config/env.js"
 import { ImageError } from "../utils/images.js"
 
+const denylistedHosts = [
+  "reddit.com",
+  "giphy.com",
+  "tenor.com",
+  "imgur.com",
+
+  // Pinterest
+  "pin.it",
+  "i.pinimg.com",
+
+  // Google
+  "images.app.goo.gl",
+  "youtube.com",
+  "youtu.be",
+  "drive.google.com",
+
+  // Discord
+  "discord.com",
+  "cdn.discordapp.com",
+  "media.discordapp.net"
+]
+
 export default class RequestURL extends BaseCommand {
   constructor(creator: SlashCreator) {
     super(creator, {
@@ -23,10 +45,16 @@ export default class RequestURL extends BaseCommand {
 
   async run(ctx: CommandContext) {
     const { url } = ctx.options
+    let imageUrl: URL
     try {
-      new URL(url)
+      imageUrl = new URL(url)
     } catch (err) {
       return ctx.send("Invalid URL provided", { ephemeral: true })
+    }
+
+    // Check if the hostname is one of denied hostnames, or a subdomain of one of them
+    if (denylistedHosts.some(host => imageUrl.hostname === host || imageUrl.hostname.endsWith("." + host))) {
+      return ctx.send("The URL provided does not point to an image API. You should download the image and request it with the /request command instead.")
     }
 
     try {
