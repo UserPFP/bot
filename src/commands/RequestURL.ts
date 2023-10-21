@@ -54,7 +54,7 @@ export default class RequestURL extends BaseCommand {
 
     // Check if the hostname is one of denied hostnames, or a subdomain of one of them
     if (denylistedHosts.some(host => imageUrl.hostname === host || imageUrl.hostname.endsWith("." + host))) {
-      return ctx.send("The URL provided does not point to an image API. You should download the image and request it with the /request command instead.")
+      return ctx.send("The URL provided does not point to an image API. You should download the image and request it with the /request command instead.", { ephemeral: true })
     }
 
     try {
