@@ -11,6 +11,7 @@ const denylistedHosts = [
   "giphy.com",
   "tenor.com",
   "imgur.com",
+  "ibb.co",
 
   // Pinterest
   "pin.it",
