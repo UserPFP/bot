@@ -1,4 +1,4 @@
-import { AttachmentData } from "slash-create"
+import { AttachmentData, EmbedImage } from "slash-create"
 
 import env from "../config/env.js"
 import octokit from "../config/octokit.js"
@@ -7,11 +7,13 @@ export interface ValidatedImage {
   type: string
   ext: string
   url: string
+  stillUrl: string
 }
 export interface ImageData {
   type: string
   ext: string
-  buf: Buffer
+  animated: Buffer
+  still: Buffer
 }
 
 const aspectRatioVariance = 0.1 // Allow 10% different in size between width and height
@@ -20,6 +22,12 @@ const maxImageBytes = 12e6 // 12MB
 
 // Error class used when issues regarding image processing occur
 export class ImageError extends Error {}
+
+export function getStillUrl (image: AttachmentData|EmbedImage) {
+  const stillUrl = new URL(image.proxy_url!)
+  stillUrl.searchParams.set("format", "png")
+  return stillUrl.toString()
+}
 
 export function validateImage (attachment: AttachmentData): ValidatedImage {
   if (attachment.content_type === undefined || !allowedContentTypes.includes(attachment.content_type)) {
@@ -41,47 +49,56 @@ export function validateImage (attachment: AttachmentData): ValidatedImage {
   if (attachment.size > maxImageBytes) {
     throw new ImageError("The provided image is too large and must be compressed.")
   }
+
+
   return {
     type: attachment.content_type,
     ext: attachment.content_type.split("/")[1],
-    url: attachment.url
+    url: attachment.url,
+    stillUrl: getStillUrl(attachment)
   }
 }
 
 export async function validateAndDownloadImage (image: ValidatedImage): Promise<ImageData> {
-  const imageRequest = await fetch(image.url, {
-    headers: {
-      "User-Agent": env.useragent
-    }
-  })
+  const imageRequests = await Promise.all([
+    fetch(image.url, {
+      headers: {
+        "User-Agent": env.useragent
+      }
+    }),
+    fetch(image.stillUrl, {
+      headers: {
+        "User-Agent": env.useragent
+      }
+    })
+  ])
 
-  if (!imageRequest.ok) {
+  if (imageRequests.some(v => !v.ok)) {
     throw new ImageError("Unable to download image!")
   }
 
-  const imageArrayBuffer = await imageRequest.arrayBuffer()
-  const imageBuffer = Buffer.from(imageArrayBuffer)
+  const imageArrayBuffers = await Promise.all(imageRequests.map(i => i.arrayBuffer()))
+  const [ animated, still ] = imageArrayBuffers.map(ab => Buffer.from(ab))
 
   return {
     type: image.type!,
     ext: image.ext,
-    buf: imageBuffer
+    animated,
+    still
   }
 }
 
-export async function updateUserAvatarImage (userId: string, image: ImageData) {
-  const imagePath = `Avatars/${userId[0]}/${userId}.${image.ext}`
-
+async function uploadImageFile (message: string, imagePath: string, buff: Buffer) {
   let sha: string | undefined = undefined
   try {
-    const existingImageData = await octokit.repos.getContent({
+    const existingFileData = await octokit.repos.getContent({
       owner: env.repos.image.owner,
       repo: env.repos.image.name,
       path: imagePath
     })
-    if ("sha" in existingImageData.data) {
+    if ("sha" in existingFileData.data) {
       // eslint-disable-next-line prefer-destructuring
-      sha = existingImageData.data.sha
+      sha = existingFileData.data.sha
     }
   } catch (err: any) {
     if (!("status" in err && err.status === 404)) {
@@ -93,14 +110,20 @@ export async function updateUserAvatarImage (userId: string, image: ImageData) {
     owner: env.repos.image.owner,
     repo: env.repos.image.name,
     path: imagePath,
-    message: `Updating avatar for ${userId}`,
-    content: image.buf.toString("base64"),
+    message: message,
+    content: buff.toString("base64"),
     sha
   })
-
-  return `https://raw.githubusercontent.com/${env.repos.image.owner}/${env.repos.image.name}/main/${imagePath}`
 }
 
+export async function updateUserAvatarImage (userId: string, image: ImageData) {
+  const imageBasePath = `Avatars/${userId[0]}/${userId}`
+
+  await uploadImageFile(`Updating animated avatar for ${userId}`, `${imageBasePath}.gif`, image.animated)
+  await uploadImageFile(`Updating still avatar for ${userId}`, `${imageBasePath}.png`, image.still)
+
+  return `https://raw.githubusercontent.com/${env.repos.image.owner}/${env.repos.image.name}/main/${imageBasePath}`
+}
 
 export async function deleteUserAvatarImage (userId: string) {
   // Get a list of all avatar files in the directory

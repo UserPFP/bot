@@ -3,7 +3,7 @@ import { ComponentContext, ComponentType, TextInputStyle } from "slash-create"
 import client from "./config/client.js"
 import env from "./config/env.js"
 import { updateUserAvatarUrl } from "./utils/database.js"
-import { ValidatedImage } from "./utils/images.js"
+import { getStillUrl, ValidatedImage } from "./utils/images.js"
 import { updateUserAvatar } from "./utils/index.js"
 
 // Track which messages are currently being handled to prevent status collisions
@@ -23,7 +23,8 @@ function extractImageData (ctx: ComponentContext): { userId: string, image: Vali
     image:{
       type,
       ext,
-      url: ctx.message.embeds[0].thumbnail.url
+      url: ctx.message.embeds[0].thumbnail.url,
+      stillUrl: getStillUrl(ctx.message.embeds[0].thumbnail)
     }
   }
 }
@@ -31,6 +32,7 @@ function extractImageData (ctx: ComponentContext): { userId: string, image: Vali
 async function handleApproval (ctx: ComponentContext) {
   const validatedData = extractImageData(ctx)
   if (validatedData === null) {
+    await ctx.send("Unable to extract image data or image already approved", { ephemeral: true })
     return
   }
   const { userId, image } = validatedData
@@ -55,6 +57,7 @@ async function handleApproval (ctx: ComponentContext) {
 async function handleUrlApproval (ctx: ComponentContext) {
   const validatedData = extractImageData(ctx)
   if (validatedData === null) {
+    await ctx.send("Unable to extract image data or image already approved", { ephemeral: true })
     return
   }
   const { userId, image: { url } } = validatedData
@@ -81,6 +84,7 @@ async function handleUrlApproval (ctx: ComponentContext) {
 async function handleDenial (ctx: ComponentContext) {
   const validatedData = extractImageData(ctx)
   if (validatedData === null) {
+    await ctx.send("Unable to extract image data or image already approved", { ephemeral: true })
     return
   }
   const { userId, image } = validatedData
@@ -142,7 +146,6 @@ export default async function componentHandler (ctx: ComponentContext) {
   if (!ctx.member?.roles.includes(env.approvals.role)) {
     return
   }
-
   const handlers: { [key: string]: (ctx: ComponentContext) => any } = {
     approve: handleApproval,
     approve_url: handleUrlApproval,
