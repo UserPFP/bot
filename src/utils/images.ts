@@ -15,7 +15,7 @@ export interface ImageData {
 }
 
 const aspectRatioVariance = 0.1 // Allow 10% different in size between width and height
-const allowedContentTypes = ["image/png", "image/jpeg", "image/gif", "image/webp"]
+const allowedContentTypes = ["image/gif"]
 const maxImageBytes = 12e6 // 12MB
 
 // Error class used when issues regarding image processing occur
@@ -23,7 +23,7 @@ export class ImageError extends Error {}
 
 export function validateImage (attachment: AttachmentData): ValidatedImage {
   if (attachment.content_type === undefined || !allowedContentTypes.includes(attachment.content_type)) {
-    throw new ImageError("Image type not supported!")
+    throw new ImageError("Image must be a gif.")
   }
 
   // Make sure the image is square-ish
