@@ -1,4 +1,4 @@
-FROM node:20-alpine as base
+FROM node:24-alpine AS base
 WORKDIR /usr/src/userpfp-bot
 ENV DOCKER="TRUE"
 ENV PNPM_HOME="/pnpm"
